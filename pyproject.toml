@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kiriminaja"
-version = "1.0.0"
+version = "0.0.1-alpha.1"
 description = "Official Python SDK for the KiriminAja logistics API"
 readme = "README.md"
 license = "MIT"
