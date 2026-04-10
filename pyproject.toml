@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "kiriminaja"
-version = "0.0.1-alpha.1"
+dynamic = ["version"]
 description = "Official Python SDK for the KiriminAja logistics API"
 readme = "README.md"
 license = "MIT"
@@ -30,6 +30,12 @@ Repository = "https://github.com/kiriminaja/python"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/kiriminaja"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/kiriminaja/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

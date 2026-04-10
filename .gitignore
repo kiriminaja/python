@@ -10,6 +10,9 @@ build/
 # uv
 uv.lock
 
+# hatch-vcs generated
+src/kiriminaja/_version.py
+
 # IDE
 .idea/
 .vscode/
