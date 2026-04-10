@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, List
 
 from ..http import AsyncHttpClient, HttpClient
 
@@ -20,7 +20,7 @@ class CourierService:
             "/api/mitra/courier_services", {"courier_code": courier_code}
         )
 
-    def set_whitelist_services(self, services: list[str]) -> Any:
+    def set_whitelist_services(self, services: List[str]) -> Any:
         return self._client.post_json(
             "/api/mitra/v3/set_whitelist_services", {"services": services}
         )
@@ -41,7 +41,7 @@ class AsyncCourierService:
             "/api/mitra/courier_services", {"courier_code": courier_code}
         )
 
-    async def set_whitelist_services(self, services: list[str]) -> Any:
+    async def set_whitelist_services(self, services: List[str]) -> Any:
         return await self._client.post_json(
             "/api/mitra/v3/set_whitelist_services", {"services": services}
         )
