@@ -9,6 +9,7 @@ import pytest
 
 from kiriminaja import (
     Env,
+    ExpressService,
     InstantPickupItem,
     InstantPickupPackage,
     InstantPickupPayload,
@@ -123,7 +124,7 @@ class TestCoverageArea:
             weight=1000,
             item_value=50000,
             insurance=0,
-            courier=["jne", "jnt"],
+            courier=[ExpressService.JNE, "other"],
         )
         client.coverage_area.pricing_express(payload)
         assert "/api/mitra/v6.1/shipping_price" in str(transport.calls[0].url)
@@ -135,7 +136,7 @@ class TestCoverageArea:
     def test_pricing_instant(self) -> None:
         client, transport = _make_client()
         payload = PricingInstantPayload(
-            service=[InstantService.GOSEND],
+            service=[InstantService.GOSEND, "other"],
             item_price=10000,
             origin=PricingInstantLocationPayload(lat=-6.2, long=106.8, address="A"),
             destination=PricingInstantLocationPayload(lat=-6.21, long=106.81, address="B"),

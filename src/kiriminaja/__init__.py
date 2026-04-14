@@ -1,6 +1,6 @@
 from .client import AsyncKiriminAja, KiriminAja
 from .config import Env
-from .types.enums import InstantService, InstantVehicle
+from .types.enums import ExpressService, InstantService, InstantVehicle
 
 try:
     from ._version import __version__
@@ -24,6 +24,7 @@ __all__ = [
     "KiriminAja",
     "AsyncKiriminAja",
     "Env",
+    "ExpressService",
     "InstantService",
     "InstantVehicle",
     "PricingExpressPayload",
