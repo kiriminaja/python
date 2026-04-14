@@ -9,7 +9,7 @@ description = "Official Python SDK for the KiriminAja logistics API"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-authors = [{ name = "KiriminAja Team", email = "team@kiriminaja.com" }]
+authors = [{ name = "KiriminAja Team", email = "tech@kiriminaja.com" }]
 keywords = ["kiriminaja", "logistics", "shipping", "sdk"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
