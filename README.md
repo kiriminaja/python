@@ -4,18 +4,21 @@
 [![PyPI downloads](https://img.shields.io/pypi/dw/kiriminaja)](https://pypi.org/project/kiriminaja/)
 [![license](https://img.shields.io/github/license/kiriminaja/python)](LICENSE)
 
-Official Python SDK for the [KiriminAja](https://kiriminaja.com) logistics API. Supports both sync and async via [httpx](https://www.python-httpx.org/).
+Official Python SDK for the [KiriminAja](https://kiriminaja.com) logistics API. Supports both sync and async, and is **fully framework-agnostic** — works out of the box with the stdlib, or plug in your existing [httpx](https://www.python-httpx.org/), [requests](https://requests.readthedocs.io/), or [aiohttp](https://docs.aiohttp.org/) client.
 
 ## Requirements
 
 - Python 3.10+
+- No required runtime dependencies. Install an HTTP client only if you want one (`pip install kiriminaja[httpx]`, `[requests]`, or `[aiohttp]`).
 
 ## Installation
 
 ```bash
 pip install kiriminaja
-# uv add kiriminaja
-# poetry add kiriminaja
+# Optional extras:
+pip install "kiriminaja[httpx]"      # for httpx (sync + async)
+pip install "kiriminaja[requests]"   # for requests (sync only)
+pip install "kiriminaja[aiohttp]"    # for aiohttp (async only)
 ```
 
 ---
@@ -54,9 +57,9 @@ async with AsyncKiriminAja(env=Env.SANDBOX, api_key="YOUR_API_KEY") as client:
 | `env`         | `Env`          | `Env.SANDBOX`    | Target environment                   |
 | `api_key`     | `str`          | —                | Your KiriminAja API key              |
 | `base_url`    | `str`          | Derived from env | Override the base URL                |
-| `http_client` | `httpx.Client` | auto-created     | Custom sync HTTP client (proxy/mock) |
+| `http_client` | `Any`          | stdlib `urllib`  | Custom sync HTTP client (see below)  |
 
-For `AsyncKiriminAja`, use `async_http_client` (`httpx.AsyncClient`) instead.
+For `AsyncKiriminAja`, use `async_http_client` instead. It defaults to `httpx.AsyncClient` when `httpx` is installed; otherwise pass an `aiohttp.ClientSession` or your own `AsyncHttpTransport`.
 
 ```python
 # Custom base URL
@@ -65,13 +68,36 @@ client = KiriminAja(
     api_key="YOUR_API_KEY",
 )
 
-# Custom httpx client (e.g. with timeout or proxy)
+# Plug in httpx
 import httpx
+client = KiriminAja(api_key="...", http_client=httpx.Client(timeout=10))
 
-client = KiriminAja(
-    api_key="...",
-    http_client=httpx.Client(timeout=10),
-)
+# Plug in requests
+import requests
+client = KiriminAja(api_key="...", http_client=requests.Session())
+
+# Async with aiohttp
+import aiohttp
+async with aiohttp.ClientSession() as session:
+    client = AsyncKiriminAja(api_key="...", async_http_client=session)
+    await client.address.provinces()
+```
+
+### Bring your own transport
+
+For frameworks that ship their own HTTP layer (e.g. internal proxies,
+service meshes, sandboxed environments), implement `HttpTransport` /
+`AsyncHttpTransport` directly:
+
+```python
+from kiriminaja import KiriminAja, HttpResponse, HttpTransport
+
+class MyTransport(HttpTransport):
+    def request(self, method, url, *, headers, content):
+        # …call your own HTTP layer here…
+        return HttpResponse(status_code=200, headers={}, content=b'{"status": true}')
+
+client = KiriminAja(api_key="...", http_client=MyTransport())
 ```
 
 ---

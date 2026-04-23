@@ -1,5 +1,11 @@
 from .client import AsyncKiriminAja, KiriminAja
 from .config import Env
+from .transport import (
+    AsyncHttpTransport,
+    HttpResponse,
+    HttpTransport,
+    UrllibTransport,
+)
 from .types.enums import ExpressService, InstantService, InstantVehicle
 
 try:
@@ -39,4 +45,8 @@ __all__ = [
     "InstantPickupItem",
     "InstantPickupPackage",
     "InstantPickupPayload",
+    "HttpResponse",
+    "HttpTransport",
+    "AsyncHttpTransport",
+    "UrllibTransport",
 ]

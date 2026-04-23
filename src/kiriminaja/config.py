@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import sys
+from dataclasses import dataclass, field
+from typing import Any
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -10,8 +11,6 @@ else:
 
     class StrEnum(str, Enum):
         pass
-
-import httpx
 
 
 class Env(StrEnum):
@@ -30,8 +29,12 @@ class Config:
     env: Env = Env.SANDBOX
     api_key: str = ""
     base_url: str = ""
-    http_client: httpx.Client | None = field(default=None, repr=False)
-    async_http_client: httpx.AsyncClient | None = field(default=None, repr=False)
+    # `http_client` / `async_http_client` accept any HTTP client supported by
+    # `kiriminaja.transport.adapt_*_transport` — typically an httpx client,
+    # a requests.Session / aiohttp.ClientSession, or a custom
+    # HttpTransport / AsyncHttpTransport implementation.
+    http_client: Any = field(default=None, repr=False)
+    async_http_client: Any = field(default=None, repr=False)
 
     def resolved_base_url(self) -> str:
         if self.base_url:

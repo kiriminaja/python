@@ -1,21 +1,43 @@
 from __future__ import annotations
 
+import json as _json
 from typing import Any
-from urllib.parse import urlencode, urljoin
-
-import httpx
+from urllib.parse import urlencode
 
 from .config import Config
+from .transport import (
+    AsyncHttpTransport,
+    HttpTransport,
+    adapt_async_transport,
+    adapt_sync_transport,
+)
+
+
+class HttpError(Exception):
+    """Raised when the API responds with a non-2xx status."""
+
+    def __init__(self, status_code: int, reason: str, body: bytes) -> None:
+        super().__init__(f"Request failed: {status_code} {reason}")
+        self.status_code = status_code
+        self.reason = reason
+        self.body = body
 
 
 class HttpClient:
     def __init__(self, config: Config) -> None:
         self._config = config
-        self._client = config.http_client or httpx.Client()
+        self._transport: HttpTransport = adapt_sync_transport(config.http_client)
+        self._owns_client = config.http_client is None
 
     def close(self) -> None:
-        if self._config.http_client is None:
-            self._client.close()
+        if not self._owns_client:
+            return
+        client = getattr(self._transport, "_client", None) or getattr(
+            self._transport, "_session", None
+        )
+        close = getattr(client, "close", None)
+        if callable(close):
+            close()
 
     # -- low-level --------------------------------------------------------
 
@@ -32,17 +54,13 @@ class HttpClient:
         req_headers = self._build_headers(body, method, headers)
         content: bytes | None = None
         if body is not None and method not in ("GET", "DELETE"):
-            import json as _json
-
             content = _json.dumps(body).encode()
 
-        response = self._client.request(
-            method, url, content=content, headers=req_headers
+        response = self._transport.request(
+            method, url, headers=req_headers, content=content
         )
         if not (200 <= response.status_code < 300):
-            raise Exception(
-                f"Request failed: {response.status_code} {response.reason_phrase}"
-            )
+            raise HttpError(response.status_code, response.reason, response.content)
         return response.json()
 
     def post_json(self, path: str, body: Any = None) -> Any:
@@ -84,11 +102,22 @@ class HttpClient:
 class AsyncHttpClient:
     def __init__(self, config: Config) -> None:
         self._config = config
-        self._client = config.async_http_client or httpx.AsyncClient()
+        self._transport: AsyncHttpTransport = adapt_async_transport(
+            config.async_http_client
+        )
+        self._owns_client = config.async_http_client is None
 
     async def aclose(self) -> None:
-        if self._config.async_http_client is None:
-            await self._client.aclose()
+        if not self._owns_client:
+            return
+        client = getattr(self._transport, "_client", None) or getattr(
+            self._transport, "_session", None
+        )
+        aclose = getattr(client, "aclose", None) or getattr(client, "close", None)
+        if callable(aclose):
+            result = aclose()
+            if hasattr(result, "__await__"):
+                await result
 
     # -- low-level --------------------------------------------------------
 
@@ -105,17 +134,13 @@ class AsyncHttpClient:
         req_headers = self._build_headers(body, method, headers)
         content: bytes | None = None
         if body is not None and method not in ("GET", "DELETE"):
-            import json as _json
-
             content = _json.dumps(body).encode()
 
-        response = await self._client.request(
-            method, url, content=content, headers=req_headers
+        response = await self._transport.request(
+            method, url, headers=req_headers, content=content
         )
         if not (200 <= response.status_code < 300):
-            raise Exception(
-                f"Request failed: {response.status_code} {response.reason_phrase}"
-            )
+            raise HttpError(response.status_code, response.reason, response.content)
         return response.json()
 
     async def post_json(self, path: str, body: Any = None) -> Any:
