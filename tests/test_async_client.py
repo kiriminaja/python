@@ -238,6 +238,15 @@ class TestAsyncCourier:
 
 
 @pytest.mark.asyncio
+class TestAsyncCredit:
+    async def test_balance(self) -> None:
+        client, transport = _make_async_client()
+        await client.credit.balance()
+        assert "/api/mitra/v6.2/credit/balance" in str(transport.calls[0].url)
+        assert transport.calls[0].method == "GET"
+
+
+@pytest.mark.asyncio
 class TestAsyncPickup:
     async def test_schedules(self) -> None:
         client, transport = _make_async_client()

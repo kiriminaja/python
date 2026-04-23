@@ -7,6 +7,7 @@ from .http import AsyncHttpClient, HttpClient
 from .services.address import AddressService, AsyncAddressService
 from .services.courier import AsyncCourierService, CourierService
 from .services.coverage_area import AsyncCoverageAreaService, CoverageAreaService
+from .services.credit import AsyncCreditService, CreditService
 from .services.order import AsyncOrderService, OrderService
 from .services.payment import AsyncPaymentService, PaymentService
 from .services.pickup import AsyncPickupService, PickupService
@@ -34,6 +35,7 @@ class KiriminAja:
         self.address = AddressService(self._http)
         self.courier = CourierService(self._http)
         self.coverage_area = CoverageAreaService(self._http)
+        self.credit = CreditService(self._http)
         self.order = OrderService(self._http)
         self.payment = PaymentService(self._http)
         self.pickup = PickupService(self._http)
@@ -70,6 +72,7 @@ class AsyncKiriminAja:
         self.address = AsyncAddressService(self._http)
         self.courier = AsyncCourierService(self._http)
         self.coverage_area = AsyncCoverageAreaService(self._http)
+        self.credit = AsyncCreditService(self._http)
         self.order = AsyncOrderService(self._http)
         self.payment = AsyncPaymentService(self._http)
         self.pickup = AsyncPickupService(self._http)

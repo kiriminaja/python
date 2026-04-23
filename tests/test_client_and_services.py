@@ -326,6 +326,19 @@ class TestCourier:
 
 
 # ---------------------------------------------------------------------------
+# Credit
+# ---------------------------------------------------------------------------
+
+
+class TestCredit:
+    def test_balance(self) -> None:
+        client, transport = _make_client()
+        client.credit.balance()
+        assert "/api/mitra/v6.2/credit/balance" in str(transport.calls[0].url)
+        assert transport.calls[0].method == "GET"
+
+
+# ---------------------------------------------------------------------------
 # Pickup
 # ---------------------------------------------------------------------------
 
