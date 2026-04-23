@@ -17,6 +17,8 @@ from kiriminaja.types.order import (
     InstantPickupItem,
     InstantPickupPackage,
     InstantPickupPayload,
+    RequestPickupItem,
+    RequestPickupItemMetadata,
     RequestPickupPackage,
     RequestPickupPayload,
 )
@@ -142,6 +144,21 @@ class TestAsyncOrderExpress:
                     service="jne", service_type="REG23",
                     cod=0, package_type_id=7,
                     item_name="TEST Item name",
+                    items=[
+                        RequestPickupItem(
+                            name="Kaos Polos",
+                            price=125000,
+                            qty=2,
+                            weight=260,
+                            width=4,
+                            length=4,
+                            height=4,
+                            metadata=RequestPickupItemMetadata(
+                                sku="KP-001",
+                                variant_label="Merah / L",
+                            ),
+                        ),
+                    ],
                 ),
             ],
         )

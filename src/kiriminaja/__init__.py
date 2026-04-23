@@ -16,6 +16,8 @@ from .types.order import (
     InstantPickupItem,
     InstantPickupPackage,
     InstantPickupPayload,
+    RequestPickupItem,
+    RequestPickupItemMetadata,
     RequestPickupPackage,
     RequestPickupPayload,
 )
@@ -30,6 +32,8 @@ __all__ = [
     "PricingExpressPayload",
     "PricingInstantLocationPayload",
     "PricingInstantPayload",
+    "RequestPickupItem",
+    "RequestPickupItemMetadata",
     "RequestPickupPackage",
     "RequestPickupPayload",
     "InstantPickupItem",

@@ -7,6 +7,49 @@ from .address import _clean
 
 
 @dataclass(slots=True)
+class RequestPickupItemMetadata:
+    sku: str | None = None
+    variant_label: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        d: dict[str, Any] = {}
+        if self.sku is not None:
+            d["sku"] = self.sku
+        if self.variant_label is not None:
+            d["variant_label"] = self.variant_label
+        return d
+
+
+@dataclass(slots=True)
+class RequestPickupItem:
+    name: str
+    price: int
+    qty: int
+    weight: int
+    width: int | None = None
+    length: int | None = None
+    height: int | None = None
+    metadata: RequestPickupItemMetadata | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        d: dict[str, Any] = {
+            "name": self.name,
+            "price": self.price,
+            "qty": self.qty,
+            "weight": self.weight,
+        }
+        optional: dict[str, Any] = {
+            "width": self.width,
+            "length": self.length,
+            "height": self.height,
+        }
+        d.update(_clean(optional))
+        if self.metadata is not None:
+            d["metadata"] = self.metadata.to_dict()
+        return d
+
+
+@dataclass(slots=True)
 class RequestPickupPackage:
     order_id: str
     destination_name: str
@@ -30,6 +73,7 @@ class RequestPickupPackage:
     insurance_amount: float | None = None
     drop: bool | None = None
     note: str | None = None
+    items: list[RequestPickupItem] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         d: dict[str, Any] = {
@@ -59,6 +103,8 @@ class RequestPickupPackage:
             "note": self.note,
         }
         d.update(_clean(optional))
+        if self.items is not None:
+            d["items"] = [item.to_dict() for item in self.items]
         return d
 
 
