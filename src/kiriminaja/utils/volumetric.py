@@ -40,9 +40,15 @@ def calculate(items: Iterable[ItemLike]) -> Dimensions:
     if not items:
         return Dimensions()
 
-    l_vert = w_vert = h_vert = 0
-    l_hor = w_hor = h_hor = 0
-    l_side = w_side = h_side = 0
+    l_vert: float = 0.0
+    w_vert: float = 0.0
+    h_vert: float = 0.0
+    l_hor: float = 0.0
+    w_hor: float = 0.0
+    h_hor: float = 0.0
+    l_side: float = 0.0
+    w_side: float = 0.0
+    h_side: float = 0.0
 
     for raw in items:
         it = _coerce(raw)
