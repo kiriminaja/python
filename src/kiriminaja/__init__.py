@@ -7,6 +7,8 @@ from .transport import (
     UrllibTransport,
 )
 from .types.enums import ExpressService, InstantService, InstantVehicle
+from .utils.volumetric import Dimensions, VolumetricItem
+from .utils.volumetric import calculate as volumetric_calculate
 
 try:
     from ._version import __version__
@@ -49,4 +51,7 @@ __all__ = [
     "HttpTransport",
     "AsyncHttpTransport",
     "UrllibTransport",
+    "VolumetricItem",
+    "Dimensions",
+    "volumetric_calculate",
 ]

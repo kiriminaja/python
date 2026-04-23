@@ -52,12 +52,12 @@ async with AsyncKiriminAja(env=Env.SANDBOX, api_key="YOUR_API_KEY") as client:
 
 ## Config Options
 
-| Option        | Type           | Default          | Description                          |
-| ------------- | -------------- | ---------------- | ------------------------------------ |
-| `env`         | `Env`          | `Env.SANDBOX`    | Target environment                   |
-| `api_key`     | `str`          | —                | Your KiriminAja API key              |
-| `base_url`    | `str`          | Derived from env | Override the base URL                |
-| `http_client` | `Any`          | stdlib `urllib`  | Custom sync HTTP client (see below)  |
+| Option        | Type  | Default          | Description                         |
+| ------------- | ----- | ---------------- | ----------------------------------- |
+| `env`         | `Env` | `Env.SANDBOX`    | Target environment                  |
+| `api_key`     | `str` | —                | Your KiriminAja API key             |
+| `base_url`    | `str` | Derived from env | Override the base URL               |
+| `http_client` | `Any` | stdlib `urllib`  | Custom sync HTTP client (see below) |
 
 For `AsyncKiriminAja`, use `async_http_client` instead. It defaults to `httpx.AsyncClient` when `httpx` is installed; otherwise pass an `aiohttp.ClientSession` or your own `AsyncHttpTransport`.
 
@@ -302,6 +302,25 @@ client.courier.set_whitelist_services(["jne_reg", "jne_yes"])
 ```python
 # Get the current KiriminAja credit balance
 client.credit.balance()
+```
+
+---
+
+### Utilities — Volumetric
+
+Estimate the smallest bounding box (length / width / height) for a
+multi-item package by trying three stacking strategies and returning the
+arrangement with the smallest volume.
+
+```python
+from kiriminaja.utils.volumetric import VolumetricItem, calculate
+
+dim = calculate([
+    VolumetricItem(qty=2, length=10, width=10, height=2),
+    VolumetricItem(qty=1, length=5,  width=5,  height=5),
+])
+# dim.length, dim.width, dim.height
+# Plain dicts are also accepted: {"qty": 2, "length": 10, ...}
 ```
 
 ---
