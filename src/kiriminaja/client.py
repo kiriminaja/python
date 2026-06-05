@@ -5,12 +5,15 @@ from typing import Any
 from .config import Config, Env
 from .http import AsyncHttpClient, HttpClient
 from .services.address import AddressService, AsyncAddressService
+from .services.awb import AsyncAWBService, AWBService
+from .services.calculations import AsyncCalculationsService, CalculationsService
 from .services.courier import AsyncCourierService, CourierService
 from .services.coverage_area import AsyncCoverageAreaService, CoverageAreaService
 from .services.credit import AsyncCreditService, CreditService
 from .services.order import AsyncOrderService, OrderService
 from .services.payment import AsyncPaymentService, PaymentService
 from .services.pickup import AsyncPickupService, PickupService
+from .services.profile import AsyncProfileService, ProfileService
 
 
 class KiriminAja:
@@ -33,12 +36,15 @@ class KiriminAja:
         self._http = HttpClient(self._config)
 
         self.address = AddressService(self._http)
+        self.awb = AWBService(self._http)
+        self.calculations = CalculationsService(self._http)
         self.courier = CourierService(self._http)
         self.coverage_area = CoverageAreaService(self._http)
         self.credit = CreditService(self._http)
         self.order = OrderService(self._http)
         self.payment = PaymentService(self._http)
         self.pickup = PickupService(self._http)
+        self.profile = ProfileService(self._http)
 
     def close(self) -> None:
         self._http.close()
@@ -70,12 +76,15 @@ class AsyncKiriminAja:
         self._http = AsyncHttpClient(self._config)
 
         self.address = AsyncAddressService(self._http)
+        self.awb = AsyncAWBService(self._http)
+        self.calculations = AsyncCalculationsService(self._http)
         self.courier = AsyncCourierService(self._http)
         self.coverage_area = AsyncCoverageAreaService(self._http)
         self.credit = AsyncCreditService(self._http)
         self.order = AsyncOrderService(self._http)
         self.payment = AsyncPaymentService(self._http)
         self.pickup = AsyncPickupService(self._http)
+        self.profile = AsyncProfileService(self._http)
 
     async def aclose(self) -> None:
         await self._http.aclose()
