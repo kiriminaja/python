@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Official Python SDK for the KiriminAja logistics API"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 authors = [{ name = "KiriminAja Team", email = "tech@kiriminaja.com" }]
 keywords = ["kiriminaja", "logistics", "shipping", "sdk"]
 classifiers = [
@@ -16,10 +16,8 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Typing :: Typed",
 ]
 dependencies = []
@@ -47,7 +45,7 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.14"
 strict = true
 
 [dependency-groups]

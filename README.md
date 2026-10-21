@@ -4,21 +4,24 @@
 [![PyPI downloads](https://img.shields.io/pypi/dw/kiriminaja)](https://pypi.org/project/kiriminaja/)
 [![license](https://img.shields.io/github/license/kiriminaja/python)](LICENSE)
 
-Official Python SDK for the [KiriminAja](https://kiriminaja.com) logistics API. Supports both sync and async, and is **fully framework-agnostic** — works out of the box with the stdlib, or plug in your existing [httpx](https://www.python-httpx.org/), [requests](https://requests.readthedocs.io/), or [aiohttp](https://docs.aiohttp.org/) client.
+Official Python SDK for the [KiriminAja](https://kiriminaja.com) logistics API. Supports both sync and async, and uses the Python standard library by default. Optional adapters let you plug in an existing [httpx](https://www.python-httpx.org/), [requests](https://requests.readthedocs.io/), or [aiohttp](https://docs.aiohttp.org/) client.
 
 ## Requirements
 
-- Python 3.10+
-- No required runtime dependencies. Install an HTTP client only if you want one (`pip install kiriminaja[httpx]`, `[requests]`, or `[aiohttp]`).
+- Python 3.14+
+- No required runtime dependencies. The default sync and async transports use the standard library.
 
 ## Installation
 
 ```bash
-pip install kiriminaja
+uv python install 3.14
+uv venv --python 3.14
+source .venv/bin/activate
+uv pip install kiriminaja
 # Optional extras:
-pip install "kiriminaja[httpx]"      # for httpx (sync + async)
-pip install "kiriminaja[requests]"   # for requests (sync only)
-pip install "kiriminaja[aiohttp]"    # for aiohttp (async only)
+uv pip install "kiriminaja[httpx]"      # for httpx (sync + async)
+uv pip install "kiriminaja[requests]"   # for requests (sync only)
+uv pip install "kiriminaja[aiohttp]"    # for aiohttp (async only)
 ```
 
 ---
@@ -59,7 +62,7 @@ async with AsyncKiriminAja(env=Env.SANDBOX, api_key="YOUR_API_KEY") as client:
 | `base_url`    | `str` | Derived from env | Override the base URL               |
 | `http_client` | `Any` | stdlib `urllib`  | Custom sync HTTP client (see below) |
 
-For `AsyncKiriminAja`, use `async_http_client` instead. It defaults to `httpx.AsyncClient` when `httpx` is installed; otherwise pass an `aiohttp.ClientSession` or your own `AsyncHttpTransport`.
+For `AsyncKiriminAja`, use `async_http_client` instead. It defaults to a stdlib transport running requests in a worker thread. Pass an `httpx.AsyncClient`, `aiohttp.ClientSession`, or your own `AsyncHttpTransport` when you need a native async client.
 
 ```python
 # Custom base URL

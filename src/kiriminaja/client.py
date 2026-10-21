@@ -14,6 +14,7 @@ from .services.order import AsyncOrderService, OrderService
 from .services.payment import AsyncPaymentService, PaymentService
 from .services.pickup import AsyncPickupService, PickupService
 from .services.profile import AsyncProfileService, ProfileService
+from .services.preference import AsyncPreferenceService, PreferenceService
 
 
 class KiriminAja:
@@ -45,6 +46,7 @@ class KiriminAja:
         self.payment = PaymentService(self._http)
         self.pickup = PickupService(self._http)
         self.profile = ProfileService(self._http)
+        self.preference = PreferenceService(self._http)
 
     def close(self) -> None:
         self._http.close()
@@ -85,6 +87,7 @@ class AsyncKiriminAja:
         self.payment = AsyncPaymentService(self._http)
         self.pickup = AsyncPickupService(self._http)
         self.profile = AsyncProfileService(self._http)
+        self.preference = AsyncPreferenceService(self._http)
 
     async def aclose(self) -> None:
         await self._http.aclose()

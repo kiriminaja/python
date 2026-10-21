@@ -30,6 +30,22 @@ class PricingExpressPayload:
 
 
 @dataclass(slots=True)
+class PricingExpressFullPayload:
+    """Minimal express pricing payload matching PHP's full-price model."""
+
+    origin: int
+    destination: int
+    weight: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "origin": self.origin,
+            "destination": self.destination,
+            "weight": self.weight,
+        }
+
+
+@dataclass(slots=True)
 class PricingInstantLocationPayload:
     lat: float
     long: float

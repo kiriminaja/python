@@ -21,6 +21,8 @@ class CourierService:
         )
 
     def set_whitelist_services(self, services: List[str]) -> Any:
+        if not services or any(not isinstance(service, str) or not service.strip() for service in services):
+            raise ValueError("services must contain at least one non-blank string")
         return self._client.post_json(
             "/api/mitra/v3/set_whitelist_services", {"services": services}
         )
@@ -42,6 +44,8 @@ class AsyncCourierService:
         )
 
     async def set_whitelist_services(self, services: List[str]) -> Any:
+        if not services or any(not isinstance(service, str) or not service.strip() for service in services):
+            raise ValueError("services must contain at least one non-blank string")
         return await self._client.post_json(
             "/api/mitra/v3/set_whitelist_services", {"services": services}
         )

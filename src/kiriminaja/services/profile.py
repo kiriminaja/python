@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..http import AsyncHttpClient, HttpClient
+from .normalization import normalize_profile
 
 
 class ProfileService:
@@ -12,6 +13,9 @@ class ProfileService:
     def get(self) -> Any:
         return self._client.get_json("/api/mitra/v6.2/profile")
 
+    def normalized(self) -> dict[str, Any]:
+        return normalize_profile(self.get())
+
 
 class AsyncProfileService:
     def __init__(self, client: AsyncHttpClient) -> None:
@@ -19,3 +23,6 @@ class AsyncProfileService:
 
     async def get(self) -> Any:
         return await self._client.get_json("/api/mitra/v6.2/profile")
+
+    async def normalized(self) -> dict[str, Any]:
+        return normalize_profile(await self.get())

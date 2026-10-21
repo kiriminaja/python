@@ -14,6 +14,7 @@ Only the stdlib is required at runtime. ``httpx`` / ``requests`` /
 
 from __future__ import annotations
 
+import asyncio
 import json
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional, Protocol, runtime_checkable
@@ -111,6 +112,33 @@ class UrllibTransport:
                 content=body,
                 reason=exc.reason or "",
             )
+
+
+class UrllibAsyncTransport:
+    """Async facade over the stdlib transport.
+
+    ``urllib`` is synchronous, so requests run in a worker thread. This keeps
+    the default SDK install dependency-free while preserving the async API.
+    """
+
+    def __init__(self, *, timeout: float | None = 30.0) -> None:
+        self._sync = UrllibTransport(timeout=timeout)
+
+    async def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        headers: Mapping[str, str],
+        content: Optional[bytes],
+    ) -> HttpResponse:
+        return await asyncio.to_thread(
+            self._sync.request,
+            method,
+            url,
+            headers=headers,
+            content=content,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -259,22 +287,14 @@ def adapt_async_transport(obj: Any) -> AsyncHttpTransport:
     """Return an async :class:`AsyncHttpTransport` for *obj*.
 
     ``obj`` may be:
-      * ``None`` — tries ``httpx.AsyncClient`` if installed, else raises
+      * ``None`` — uses :class:`UrllibAsyncTransport`
       * a custom :class:`AsyncHttpTransport`
       * an ``httpx.AsyncClient``
       * an ``aiohttp.ClientSession``
     """
 
     if obj is None:
-        try:
-            import httpx  # noqa: PLC0415
-        except ImportError as exc:  # pragma: no cover - exercised when httpx absent
-            raise RuntimeError(
-                "AsyncKiriminAja requires either httpx or a custom "
-                "async_http_client (e.g. an aiohttp.ClientSession). "
-                "Install httpx with `pip install httpx`."
-            ) from exc
-        return HttpxAsyncTransport(httpx.AsyncClient())
+        return UrllibAsyncTransport()
 
     qualified = _module_class(obj)
     if "AsyncClient" in qualified and qualified.startswith("httpx."):
@@ -299,6 +319,7 @@ __all__ = [
     "HttpxTransport",
     "RequestsTransport",
     "UrllibTransport",
+    "UrllibAsyncTransport",
     "adapt_async_transport",
     "adapt_sync_transport",
 ]

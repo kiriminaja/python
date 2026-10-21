@@ -5,6 +5,7 @@ from .transport import (
     HttpResponse,
     HttpTransport,
     UrllibTransport,
+    UrllibAsyncTransport,
 )
 from .types.enums import ExpressService, InstantService, InstantVehicle
 from .utils.volumetric import Dimensions, VolumetricItem
@@ -17,6 +18,7 @@ except ModuleNotFoundError:
 
 from .types.address import (
     PricingExpressPayload,
+    PricingExpressFullPayload,
     PricingInstantLocationPayload,
     PricingInstantPayload,
 )
@@ -38,6 +40,7 @@ __all__ = [
     "InstantService",
     "InstantVehicle",
     "PricingExpressPayload",
+    "PricingExpressFullPayload",
     "PricingInstantLocationPayload",
     "PricingInstantPayload",
     "RequestPickupItem",
@@ -51,6 +54,7 @@ __all__ = [
     "HttpTransport",
     "AsyncHttpTransport",
     "UrllibTransport",
+    "UrllibAsyncTransport",
     "VolumetricItem",
     "Dimensions",
     "volumetric_calculate",
